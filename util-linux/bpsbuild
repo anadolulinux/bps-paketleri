@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+name="util-linux"
+version="2.40.1"
+description="Various useful Linux utilities"
+source="https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${version%.*}/util-linux-${version}.tar.gz"
+depends="libcap-ng,python,eudev"
+builddepend=""
+group="sys.apps"
+
+setup(){
+	mkdir -pv $DESTDIR/var/lib/hwclock
+   cd $SOURCEDIR
+   ./configure --prefix=/usr \
+		--libdir=/usr/lib64     \
+        --runstatedir=/run    \
+        --disable-chfn-chsh   \
+        --disable-login       \
+        --disable-nologin     \
+        --disable-su          \
+        --disable-setpriv     \
+        --disable-runuser     \
+        --disable-pylibmount  \
+        --disable-static      \
+        --disable-liblastlog2 \
+        --without-systemd \
+        --enable-static \
+        --with-python \
+        ADJTIME_PATH=/var/lib/hwclock/adjtime \
+        --docdir=/usr/share/doc/util-linux-2.40
+}
+
+build(){
+    make
+}
+
+package(){
+    make install DESTDIR=$DESTDIR
+}
+
