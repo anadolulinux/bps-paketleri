@@ -28,7 +28,7 @@ setup(){
 		-Dinstalled_tests=false \
 		-Dman=false \
 		-Ddaemon_user=colord \
-		-Ddocs=true
+		-Ddocs=false
 }
 
 build(){
@@ -41,7 +41,7 @@ package(){
   	addgroup -S colord 2>/dev/null
 adduser -S -D -H -h $DESTDIR/var/lib/colord -s $DESTDIR/sbin/nologin -G colord -g colord colord 2>/dev/null
     echo 'u colord - "Color management daemon" /var/lib/colord' |
-    install -Dm644 /dev/stdin "$DESTDIR/usr/lib/sysusers.d/colord.conf"
+    install -Dm644 /dev/stdin "$DESTDIR/usr/lib64/sysusers.d/colord.conf"
 	chown -R colord:colord "$DESTDIR"/var/lib/colord
 }
 
