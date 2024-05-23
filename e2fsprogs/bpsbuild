@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+version="1.47.1"
+name="e2fsprogs"
+depends="glibc,readline,ncurses"
+description="modül ve sistem iletişimi sağlayan paket"
+#source="https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v${version}/${name}-${version}.tar.xz"
+source="https://github.com/tytso/e2fsprogs/archive/v$version.tar.gz"
+groups="sys.fs"
+setup()
+{
+	cp -prvf $PACKAGEDIR/lfs64.patch /tmp/bps/build/
+	CFLAGS="$CFLAGS -flto=auto"
+	cd $SOURCEDIR
+	#patch -Np1 -i ../lfs64.patch
+	#autoreconf -fvi
+	./configure --prefix=/usr \
+		--sbindir=/usr/bin \
+	    --libdir=/usr/lib64/ \
+	    --enable-elf-shlibs \
+        --disable-libblkid \
+        --disable-libuuid \
+        --disable-uuidd \
+        --disable-fsck
+
+}
+build()
+{
+	make 
+}
+package()
+{
+	make install DESTDIR=$DESTDIR
+	rm -rf $DESTDIR/usr/share/man/man8/fsck.8
+	
+	mkdir -p $DESTDIR/lib64/
+	mv $DESTDIR/lib/* $DESTDIR/lib64/
+	rm -rf $DESTDIR/lib
+}
+
+
