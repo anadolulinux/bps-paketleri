@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+name="qtcreator"
+version="12.0.0"
+description='Lightweight, cross-platform integrated development environment'
+#source="https://download.qt.io/official_releases/qtcreator/${version%.*}/$version/qt-creator-opensource-src-$version.tar.gz"
+source="https://github.com/qt-creator/qt-creator/archive/refs/tags/v$version.tar.gz"
+depends="qt6-base,qt6-declarative,qt6-quick3d,qt6-tools,qt6-serialport,qt6-svg,qt6-webengine"
+builddepend="cmake,llvm,python,qt6-5compat"
+group="dev.qt"
+
+setup () {
+	cd $SOURCEDIR
+	cmake -B $BUILDDIR \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
+		-DCMAKE_PREFIX_PATH=/usr/lib64/cmake \
+		-DCMAKE_INSTALL_LIBEXECDIR=/usr/lib64 \
+		-DBUILD_QBS=OFF \
+		-DQTC_CLANG_BUILDMODE_MATCH=ON \
+		-DCLANGTOOLING_LINK_CLANG_DYLIB=ON \
+		-DQT_DEBUG_FIND_PACKAGE=ON
+}
+build () {
+	cmake --build $BUILDDIR
+	cmake --build $BUILDDIR --target docs
+}
+
+package () {
+	DESTDIR=$DESTDIR cmake --install $BUILDDIR
+	# Install docs
+	cp -r build/share/doc "$DESTDIR"/usr/share
+
+	DESTDIR=$DESTDIR cmake --install $BUILDDIR --component Devel
+}
+#		-DWITH_DOCS=ON \
+#		-DBUILD_DEVELOPER_DOCS=ON \
