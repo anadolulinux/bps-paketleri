@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+name="po4a"
+version="0.72"
+description="Tools for helping translation of documentation"
+source="https://github.com/mquinson/po4a/releases/download/v$version/po4a-$version.tar.gz"
+depends="gettext,perl,perl-pod-parser,perl-syntax-keyword-try"
+builddepend="diffutils,docbook-xsl perl-module-build"
+groups="sys.base"
+
+
+setup(){
+	cd $SOURCEDIR
+    perl Build.PL \
+		--installdirs=vendor \
+		--create_packlist=0
+}
+
+build(){
+	./Build
+}
+
+package(){
+	./Build install --destdir="$DESTDIR"
+}
