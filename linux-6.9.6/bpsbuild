@@ -3,7 +3,8 @@ name="linux"
 version="6.9.6"
 description="Linux kernel"
 source="https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-$version.tar.xz"
-depends="attr"
+depends=""
+builddepend="bc,cpio,gettext,elfutils,pahole,perl,python,tar,xz-utils"
 group="sys.kernel"
 
 setup(){
@@ -17,7 +18,7 @@ setup(){
 	
 	patch -Np1 -i ../files/patch-6.9.6
 	cd ../files/config .config
-	make olddefconfig
+	make defconfig
 	diff -u ../config .config || :
     
     make -s kernelrelease > version
@@ -118,6 +119,7 @@ package(){
 	echo "Adding symlink..."
 	mkdir -p "$DESTDIR/usr/src"
 	ln -sr "$builddir" "$DESTDIR/usr/src/$name"
+
 
     #make install DESTDIR=$DESTDIR
 }

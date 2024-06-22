@@ -1,0 +1,2 @@
+update-initramfs -c -k $version
+update-grub
